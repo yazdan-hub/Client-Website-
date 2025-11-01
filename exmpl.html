@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard & Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <div id="app-container">
+        
+        <div id="login-screen" class="screen active">
+            <div class="overlay"></div>
+
+            <div class="login-content">
+                <div class="static-header">
+                    <img src="https://coloredbrain.com/wp-content/themes/coloredbrain-theme/assets/images/cbci-logo.png" alt="Logo" style="height: 40px;">
+                </div>
+
+                <div class="login-box"> 
+                    <h2 id="form-title" style="margin-bottom: 25px; font-weight: normal; color: #333;">Login</h2>
+                    
+                    <div class="forgot-password">
+                        <a href="#" style="color: #666; text-decoration: none;">Forgot password?</a>
+                    </div>
+
+                    <form id="auth-form">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Username/E-Mail *" required>
+                        </div>
+
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password *" required>
+                        </div>
+                        
+                        <div class="input-group" id="confirm-password-group" style="display: none;">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Confirm Password *" required>
+                        </div>
+
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" style="margin-right: 5px;">
+                            <label for="remember">REMEMBER ME</label>
+                        </div>
+
+                        <button type="submit" class="login-button">Login</button>
+                    </form>
+                    
+                    <button class="create-account-button" id="switch-auth-btn">Create an account</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard-screen" class="screen">
+            <aside class="sidebar">
+                <div class="logo">Admin Panel</div>
+                <nav>
+                    <a href="#dashboard" class="nav-link active"><i class="fas fa-home"></i> DASHBOARD</a>
+                    <a href="#donations" class="nav-link"><i class="fas fa-hand-holding-usd"></i> DONATION MGMT.</a>
+                    <a href="#events" class="nav-link"><i class="fas fa-calendar-alt"></i> EVENTS & CAMPAIGN</a>
+                    <a href="#messages" class="nav-link"><i class="fas fa-envelope"></i> CONTACT & MESSAGES</a>
+                    <a href="#gallery" class="nav-link"><i class="fas fa-images"></i> GALLERY & MEDIA</a>
+                    <a href="#settings" class="nav-link"><i class="fas fa-cog"></i> SETTINGS</a>
+                    <a href="#" onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <header class="header">
+                    <h1>Welcome, Admin!</h1>
+                </header>
+
+                <section id="dashboard" class="content-section active">
+                    <h2>🏠 Dashboard Overview</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Donation</h3>
+                            <p>₹ 5,00,000 (Total)</p>
+                            <p class="small-text">₹ 5,000 (Today)</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Members</h3>
+                            <p>1,250</p>
+                            <p class="small-text">5 New this month</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Upcoming Events</h3>
+                            <p>3</p>
+                            <p class="small-text">Next Event: 15 Nov 2025</p>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h3>⚡ Quick Actions</h3>
+                        <button class="action-btn" onclick="showBackendAlert('Add Event')"><i class="fas fa-plus-circle"></i> Add Event</button>
+                        <button class="action-btn" onclick="showBackendAlert('Send Message')"><i class="fas fa-paper-plane"></i> Send Message</button>
+                        <button class="action-btn" onclick="showBackendAlert('Add Members')"><i class="fas fa-user-plus"></i> Add Members</button>
+                    </div>
+                </section>
+
+                <section id="donations" class="content-section">
+                    <h2>💰 Donation Management</h2>
+                    <button class="main-btn" onclick="showBackendAlert('Download Report')"><i class="fas fa-file-excel"></i> Download CSV / Excel Report</button>
+                    <button class="main-btn" onclick="showBackendAlert('Send Thank You Email')"><i class="fas fa-envelope-open-text"></i> Send "Thank You" Email</button>
+                    <p class="backend-message">List of all donations will appear here. **Requires Backend/Database.**</p>
+                </section>
+
+                <section id="events" class="content-section">
+                    <h2>📅 Event and Campaign</h2>
+                    <button class="main-btn" onclick="showBackendAlert('Add New Event')"><i class="fas fa-plus"></i> Add New Event</button>
+                    <button class="main-btn" onclick="showBackendAlert('Upload Banner')"><i class="fas fa-upload"></i> Upload Banner Pic</button>
+                    <button class="main-btn" onclick="showBackendAlert('Certificate Section')"><i class="fas fa-certificate"></i> Certificate Images Section</button>
+                    <p class="backend-message">List of all past and upcoming events...</p>
+                </section>
+                
+                <section id="messages" class="content-section">
+                    <h2>📧 Contact and Message Section</h2>
+                    <button class="main-btn" onclick="showBackendAlert('Export Messages')"><i class="fas fa-download"></i> Export all messages</button>
+                    <p class="backend-message">Discuss Section and message export logic goes here. **Requires Backend.**</p>
+                </section>
+
+                <section id="gallery" class="content-section">
+                    <h2>🖼️ Gallery and Media</h2>
+                    <button class="main-btn" onclick="showBackendAlert('Upload Photo/Video')"><i class="fas fa-camera"></i> Upload New Photo/Video</button>
+                    <button class="main-btn" onclick="showBackendAlert('Delete Image')"><i class="fas fa-trash-alt"></i> Delete Old Image</button>
+                    <p class="backend-message">Gallery auto update logic here. **Requires Backend.**</p>
+                </section>
+
+                <section id="settings" class="content-section">
+                    <h2>⚙️ Settings</h2>
+                    <button class="main-btn" onclick="showBackendAlert('Edit Website Text')"><i class="fas fa-edit"></i> Edit Website Text / Logo</button>
+                    <button class="main-btn" onclick="showBackendAlert('Admin Password Edit')"><i class="fas fa-key"></i> Admin Password Edit</button>
+                    <p class="backend-message">Settings changes require server-side saving. **Requires Backend.**</p>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIITUJA Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6a5d56;
+            --primary-light: #FFB88C;
+            --primary-dark: #E67A35;
+            --secondary: #6C757D;
+            --secondary-light: #ADB5BD;
+            --secondary-dark: #495057;
+            --accent: #FF6B6B;
+            --light: #F8F9FA;
+            --dark: #343A40;
+            --gray-light: #E9ECEF;
+            --gray-medium: #CED4DA;
+            --sidebar-width: 260px;
+            --header-height: 70px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* ===== DASHBOARD LAYOUT ===== */
+        #dashboard-screen {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR STYLES ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+            transition: var(--transition);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .logo {
+            padding: 20px 25px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo:before {
+            content: "🚀";
+            font-size: 1.8rem;
+        }
+
+        .sidebar nav {
+            padding: 20px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-left-color: white;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 20px;
+        }
+
+        /* ===== MAIN CONTENT STYLES ===== */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+
+        .header {
+            background: white;
+            padding: 0 30px;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .logo-container {
+            background: white;
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .content-section {
+            padding: 30px;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card:nth-child(2) {
+            border-top-color: var(--secondary);
+        }
+
+        .stat-card:nth-child(3) {
+            border-top-color: var(--accent);
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .small-text {
+            font-size: 0.9rem !important;
+            font-weight: 500 !important;
+            color: var(--secondary) !important;
+        }
+
+        /* ===== BUTTON STYLES ===== */
+        .main-btn,
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .main-btn {
+            background: var(--primary);
+            color: white;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .main-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 140, 66, 0.3);
+        }
+
+        .action-btn {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(154, 132, 118, 0.2);
+        }
+
+        /* ===== QUICK ACTIONS ===== */
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border: 1px solid var(--gray-light);
+        }
+
+        .quick-actions h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ===== BACKEND MESSAGE ===== */
+        .backend-message {
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-style: italic;
+            color: var(--secondary);
+            border-left: 4px solid var(--primary);
+        }
+
+        /* ===== ALERT STYLES ===== */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+        }
+
+        .alert.show {
+            transform: translateX(0);
+        }
+
+        .alert.success {
+            background: var(--primary);
+        }
+
+        .alert.info {
+            background: var(--secondary);
+        }
+
+        .alert.warning {
+            background: var(--accent);
+        }
+
+        /* ===== RESPONSIVE STYLES ===== */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: visible;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .nav-link i {
+                margin-right: 0;
+                font-size: 1.3rem;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header {
+                padding: 0 20px;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .header-logo {
+                height: 35px;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: 5px;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                cursor: pointer;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0 15px;
+            }
+
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .header-logo {
+                height: 30px;
+            }
+
+            .logo-container {
+                padding: 3px 10px;
+            }
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .p-20 {
+            padding: 20px;
+        }
+
+        /* ===== SCROLLBAR STYLING ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard-screen">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="logo"><span>NIITUJA Admin</span></div>
+            <nav>
+                <a href="#dashboard" class="nav-link active"><i class="fas fa-home"></i> <span>DASHBOARD</span></a>
+                <a href="#donations" class="nav-link"><i class="fas fa-hand-holding-usd"></i> <span>DONATION
+                        MGMT.</span></a>
+                <a href="#events" class="nav-link"><i class="fas fa-calendar-alt"></i> <span>EVENTS &
+                        CAMPAIGN</span></a>
+                <a href="#messages" class="nav-link"><i class="fas fa-envelope"></i> <span>CONTACT & MESSAGES</span></a>
+                <a href="#gallery" class="nav-link"><i class="fas fa-images"></i> <span>GALLERY & MEDIA</span></a>
+                <a href="#settings" class="nav-link"><i class="fas fa-cog"></i> <span>SETTINGS</span></a>
+                <a href="#" onclick="logout()" class="nav-link logout-btn"><i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-content">
+                    <h1>Welcome to NIITUJA</h1>
+                    <div class="logo-container">
+                        <img src="C:\Users\Mdfar\Desktop\tuts\Client work\images\Logo.jpeg" alt="NIITUJA Logo"
+                            class="header-logo">
+                    </div>
+                </div>
+            </header>
+
+            <section id="dashboard" class="content-section active">
+                <h2>🏠 Dashboard Overview</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Donation</h3>
+                        <p>₹ 5,00,000 (Total)</p>
+                        <p class="small-text">₹ 5,000 (Today)</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Members</h3>
+                        <p>1,250</p>
+                        <p class="small-text">5 New this month</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Upcoming Events</h3>
+                        <p>3</p>
+                        <p class="small-text">Next Event: 15 Nov 2025</p>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>⚡ Quick Actions</h3>
+                    <button class="action-btn" onclick="showBackendAlert('Add Event')"><i
+                            class="fas fa-plus-circle"></i> Add Event</button>
+                    <button class="action-btn" onclick="showBackendAlert('Send Message')"><i
+                            class="fas fa-paper-plane"></i> Send Message</button>
+                    <button class="action-btn" onclick="showBackendAlert('Add Members')"><i
+                            class="fas fa-user-plus"></i> Add Members</button>
+                </div>
+            </section>
+
+            <section id="donations" class="content-section">
+                <h2>💰 Donation Management</h2>
+                <button class="main-btn" onclick="showBackendAlert('Download Report')"><i class="fas fa-file-excel"></i>
+                    Download CSV / Excel Report</button>
+                <button class="main-btn" onclick="showBackendAlert('Send Thank You Email')"><i
+                        class="fas fa-envelope-open-text"></i> Send "Thank You" Email</button>
+                <p class="backend-message">List of all donations will appear here. **Requires Backend/Database.**</p>
+            </section>
+
+            <section id="events" class="content-section">
+                <h2>📅 Event and Campaign</h2>
+                <button class="main-btn" onclick="showBackendAlert('Add New Event')"><i class="fas fa-plus"></i> Add New
+                    Event</button>
+                <button class="main-btn" onclick="showBackendAlert('Upload Banner')"><i class="fas fa-upload"></i>
+                    Upload Banner Pic</button>
+                <button class="main-btn" onclick="showBackendAlert('Certificate Section')"><i
+                        class="fas fa-certificate"></i> Certificate Images Section</button>
+                <p class="backend-message">List of all past and upcoming events...</p>
+            </section>
+
+            <section id="messages" class="content-section">
+                <h2>📧 Contact and Message Section</h2>
+                <button class="main-btn" onclick="showBackendAlert('Export Messages')"><i class="fas fa-download"></i>
+                    Export all messages</button>
+                <p class="backend-message">Discuss Section and message export logic goes here. **Requires Backend.**</p>
+            </section>
+
+            <section id="gallery" class="content-section">
+                <h2>🖼️ Gallery and Media</h2>
+                <button class="main-btn" onclick="showBackendAlert('Upload Photo/Video')"><i class="fas fa-camera"></i>
+                    Upload New Photo/Video</button>
+                <button class="main-btn" onclick="showBackendAlert('Delete Image')"><i class="fas fa-trash-alt"></i>
+                    Delete Old Image</button>
+                <p class="backend-message">Gallery auto update logic here. **Requires Backend.**</p>
+            </section>
+
+            <section id="settings" class="content-section">
+                <h2>⚙️ Settings</h2>
+                <button class="main-btn" onclick="showBackendAlert('Edit Website Text')"><i class="fas fa-edit"></i>
+                    Edit Website Text / Logo</button>
+                <button class="main-btn" onclick="showBackendAlert('Admin Password Edit')"><i class="fas fa-key"></i>
+                    Admin Password Edit</button>
+                <p class="backend-message">Settings changes require server-side saving. **Requires Backend.**</p>
+            </section>
+
+        </main>
+    </div>
+
+    <div class="alert" id="backendAlert">
+        <i class="fas fa-info-circle"></i>
+        <span id="alertMessage">This feature requires backend integration</span>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+
+                    // Remove active class from all links and sections
+                    document.querySelectorAll('.nav-link').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
+                    // Show corresponding section
+                    const targetId = this.getAttribute('href').substring(1);
+                    document.getElementById(targetId).classList.add('active');
+
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('sidebar').classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Toggle sidebar on mobile
+        document.getElementById('menuToggle').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Show backend alert
+        function showBackendAlert(action) {
+            const alert = document.getElementById('backendAlert');
+            const alertMessage = document.getElementById('alertMessage');
+
+            alertMessage.textContent = `${action} - This feature requires backend integration`;
+            alert.className = 'alert info show';
+
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 3000);
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showBackendAlert('Logout');
+                // window.location.href = 'index.html';
+            }
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function (event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+
+            if (window.innerWidth <= 768 &&
+                !sidebar.contains(event.target) &&
+                !menuToggle.contains(event.target) &&
+                sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>
